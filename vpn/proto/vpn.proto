@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+service UserService {
+    rpc GetDataPengguna (Empty) returns (DataPenggunaList);
+}
+
+message Empty {}
+
+message User {
+    int32 id = 1;
+    string username = 2;
+}
+
+message DataPengguna {
+    int32 id = 1;
+    User nama = 2;
+    string email = 3;
+    int64 no_hp = 4;
+}
+
+message DataPenggunaList {
+    repeated DataPengguna users = 1;
+}

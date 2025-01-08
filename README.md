@@ -27,21 +27,21 @@ Anda sedang mengembangkan aplikasi Django yang berfungsi sebagai REST API, namun
 
 ## Soal 2: Implementasi Single Sign-On (SSO)
 
-### Deskripsi:
-Anda memiliki tiga proyek terpisah menggunakan Django REST Framework dengan JWT sebagai metode autentikasi. Klien ingin mengimplementasikan sistem Single Sign-On (SSO) yang memungkinkan pengguna login sekali dan mengakses ketiga aplikasi tersebut.
+    ### Deskripsi:
+    Anda memiliki tiga proyek terpisah menggunakan Django REST Framework dengan JWT sebagai metode autentikasi. Klien ingin mengimplementasikan sistem Single Sign-On (SSO) yang memungkinkan pengguna login sekali dan mengakses ketiga aplikasi tersebut.
 
-### Tugas:
-1. Implementasikan sistem SSO untuk ketiga aplikasi Django tersebut.
-2. Sistem SSO harus mendukung JWT dan setiap aplikasi harus dapat melakukan validasi token yang dihasilkan oleh sistem SSO.
-3. Gunakan secret key dari masing-masing aplikasi Django untuk memverifikasi JWT pada SSO.
+    ### Tugas:
+    1. Implementasikan sistem SSO untuk ketiga aplikasi Django tersebut.
+    2. Sistem SSO harus mendukung JWT dan setiap aplikasi harus dapat melakukan validasi token yang dihasilkan oleh sistem SSO.
+    3. Gunakan secret key dari masing-masing aplikasi Django untuk memverifikasi JWT pada SSO.
 
-### Kriteria Penilaian:
-- Penggunaan JWT dalam SSO
-- Validasi dan keamanan token
-- Struktur dan pengaturan kode
-- Penjelasan singkat tentang arsitektur yang dipilih
+    ### Kriteria Penilaian:
+    - Penggunaan JWT dalam SSO
+    - Validasi dan keamanan token
+    - Struktur dan pengaturan kode
+    - Penjelasan singkat tentang arsitektur yang dipilih
 
-**Bonus**: Tambahkan dukungan untuk logout global sehingga semua sesi pada aplikasi terhubung bisa ditutup secara bersamaan.
+    **Bonus**: Tambahkan dukungan untuk logout global sehingga semua sesi pada aplikasi terhubung bisa ditutup secara bersamaan.
 
 ---
 
