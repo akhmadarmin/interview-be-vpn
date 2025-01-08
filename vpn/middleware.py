@@ -14,4 +14,5 @@ class JWTSSOMiddleware:
             token = auth_header.split(" ")[1]
             response = requests.post(SSO_VALIDATE_URL, json={'token': token})
             if response.status_code != 200:
-                raise AuthenticationFailed("token invali
+                raise AuthenticationFailed("token invalid atau expired.")
+        return self.get_response(request)

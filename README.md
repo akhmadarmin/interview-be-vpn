@@ -1,65 +1,61 @@
-# Take Home Test Interview
-### Tata Cara Pengerjaan soal
-- clone repository template ini kedalam repository github pribadi anda.
-- submit jawaban / hasil dengan push ke repository yang telah anda buat sebelumnya sebagai public access repo.
-- kirimkan link repo anda ke email jefri.arbi+be_candidate@noble-software.com
-- pengerjaan dalam waktu < 7 hari mendapatkan poin ekstra
-  
-## Soal 1: Django + gRPC Integration
+** Mohon maaf tidak bisa mengimplementasikan Docker karena spesifikasi laptop kurang mendukung **
 
-### Deskripsi:
-Anda sedang mengembangkan aplikasi Django yang berfungsi sebagai REST API, namun sekarang klien meminta untuk menambahkan dukungan gRPC untuk komunikasi antar layanan di dalam aplikasi yang sama.
+**STruktur project **
 
-### Tugas:
-1. Buat sebuah gRPC server sederhana menggunakan Django yang dapat menerima permintaan gRPC untuk mengambil daftar pengguna (User) dari database.
-2. Konfigurasi aplikasi agar dapat berjalan dengan Uvicorn dan mendukung gRPC serta HTTP REST API secara bersamaan.
-3. Gunakan file `.proto` yang disertakan untuk mendefinisikan skema data gRPC Anda.
+# vpn adalah project 1 dan manage.py adalah milik vpn project 1
+# app_vpn adalah app milik vpn project 1 yang berisi database contoh untuk jawaban soal pertama
+# vpn2 adalah project 2
+# vpn3 adalah project 3
+# sso khusus untuk single sign on yang dipisahkan untuk menjaga agar project1, project2, project3 jika kelak dikembangkan tidak terganggu
 
-### Kriteria Penilaian:
-- Struktur proyek
-- Kemampuan untuk mengintegrasikan gRPC dan Django
-- Cara Anda menangani server untuk gRPC dan REST API secara bersamaan
-- Efisiensi dan dokumentasi yang jelas
 
-**Bonus**: Jika aplikasi berhasil dijalankan dengan reverse proxy menggunakan Nginx untuk mengarahkan HTTP/1.1 ke Django dan HTTP/2 ke gRPC.
+# JAWABAN 
 
----
+## POIN 1
 
-## Soal 2: Implementasi Single Sign-On (SSO)
+- Integrasi antara gRPC dan Django.
+- Komunikasi dengan stub Python (grpc_client.py).
+- Reflection API untuk testing dengan grpcurl.
 
-    ### Deskripsi:
-    Anda memiliki tiga proyek terpisah menggunakan Django REST Framework dengan JWT sebagai metode autentikasi. Klien ingin mengimplementasikan sistem Single Sign-On (SSO) yang memungkinkan pengguna login sekali dan mengakses ketiga aplikasi tersebut.
+# running di env
 
-    ### Tugas:
-    1. Implementasikan sistem SSO untuk ketiga aplikasi Django tersebut.
-    2. Sistem SSO harus mendukung JWT dan setiap aplikasi harus dapat melakukan validasi token yang dihasilkan oleh sistem SSO.
-    3. Gunakan secret key dari masing-masing aplikasi Django untuk memverifikasi JWT pada SSO.
+# interview-be-vpn/vpn:$ uvicorn vpn.asgi:application --reload
+# interview-be-vpn/vpn:$ python grpc_server.py 
 
-    ### Kriteria Penilaian:
-    - Penggunaan JWT dalam SSO
-    - Validasi dan keamanan token
-    - Struktur dan pengaturan kode
-    - Penjelasan singkat tentang arsitektur yang dipilih
+- cukup menjalankan perintah uvicorn vpn.asgi:application --reload tanpa harus menjalankan django runserver
 
-    **Bonus**: Tambahkan dukungan untuk logout global sehingga semua sesi pada aplikasi terhubung bisa ditutup secara bersamaan.
+**send request**
 
----
+#grpcurl -plaintext -d '{}' localhost:50051 ServicePenguna/AmbilUser
+- atau dengan running file grpc_client.py 
 
-## Soal 3: Custom Password Hashing with Unified Secret Key
+#python grpc_client.py 
 
-### Deskripsi:
-Anda memiliki beberapa proyek Django dengan secret key yang berbeda. Anda ingin membuat sebuah SSO yang memungkinkan Anda melakukan validasi password dari semua aplikasi menggunakan unified secret key.
+-------------
 
-### Tugas:
-1. Buat sebuah kelas `CustomPBKDF2PasswordHasher` yang menggunakan secret key dari masing-masing proyek untuk melakukan hash dan check password.
-2. Implementasikan sebuah fungsi dalam SSO yang dapat memvalidasi password dari berbagai aplikasi yang menggunakan key yang berbeda.
-3. Berikan penjelasan bagaimana cara kerja hash password dan alasan penggunaan `PBKDF2` pada sistem Anda.
+## POIN 2
 
-### Kriteria Penilaian:
-- Implementasi dari `CustomPBKDF2PasswordHasher`
-- Fungsi validasi password
-- Penjelasan tentang keamanan hash password
+- jalankan project pertama (vpn) python manage.py runserver 
+- jalankan project kedua (vpn2) python manage.py runserver 0.0.0.0:8001
+- jalankan project ketiga (vpn3) python manage.py runserver 0.0.0.0:8002
+- jalankan project sso python manage.py runserver 0.0.0.0:8003
+- semua menggunakan user dan password admin:ngantuk123
+- lalu send request ke sso dengan perintah 
+# curl -X POST -d "username=admin&password=ngantuk123" http://127.0.0.1:8003/akses/sso/login/
+- a kan menghasilkan 
+- {"refresh":"..","access":"eyJhbGciOi.."}
+- lalu send request lagi dengan curl 
+# curl -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM2Mjk3Njk4LCJpYXQiOjE3MzYyOTczOTgsImp0aSI6IjA2MjFmNjNiZDRjMjQ5YzQ4ZTFjZDAwODAyODgyMzU2IiwidXNlcl9pZCI6MSwidXNlcm5hbWUiOiJhZG1pbiJ9.i5PLK8-vn7jrP-jBarnpZbWj5DklIzDI2IyGMFIUoBw" http://127.0.0.1:8000/akses/app-vpn1/
 
-**Bonus**: Jelaskan secara singkat tentang alternatif algoritma hashing dan kapan kita perlu menggantinya.
+# akan menghasilkan message":"sedang mengakses app1 vpn1 (project1)"}
 
----
+- logout global 
+# curl -X POST -H "Authorization: Bearer <ACCESS_TOKEN>" \
+#    -d "refresh_token=<REFRESH_TOKEN>" \
+#    http://127.0.0.1:8003/akses/sso/logout/	 
+
+- jika berhasil akan menampilkan 
+# >      http://127.0.0.1:8003/akses/sso/logout/
+#  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+#                                 Dload  Upload   Total   Spent    Left  Speed
+# 100   316  100    47  100   269    262   1500 --:--:-- --:--:-- --:--:--  1765{"message":"Logout berhasil, token blacklist."}
